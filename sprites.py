@@ -2,6 +2,7 @@ import pygame as pg
 import math
 from settings import *
 from tilemap import hit_rect_collision
+import random
 vec = pg.math.Vector2
 
 class Player(pg.sprite.Sprite):
@@ -30,11 +31,11 @@ class Player(pg.sprite.Sprite):
         self.mousex, self.mousey = pg.mouse.get_pos()
         self.angle = math.atan2(self.mousex - (self.pos.x + self.camx), self.mousey - (self.pos.y + self.camy))
         self.angle = self.angle / 3.14159 * 180
-        self.angle += 186
+        self.angle += 180
         #self.image = pg.transform.rotate(self.game.player_img, int(self.angle))
 
 
-        
+
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vel.x = -PLAYER_SPEED
@@ -47,7 +48,7 @@ class Player(pg.sprite.Sprite):
         if self.vel.x != 0 and self.vel.y != 0:
             self.vel.x *= 0.7071
             self.vel.y *= 0.7071
- 
+
     #checking for collision
     def collide_with_walls(self, dir):
         if dir == 'x':
@@ -59,7 +60,7 @@ class Player(pg.sprite.Sprite):
                     self.pos.x = hits[0].rect.right + self.hit_rect.width / 2
                 self.vel.x = 0
                 self.hit_rect.centerx = self.pos.x
-                
+
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.walls, False, hit_rect_collision)
             if hits:
@@ -99,11 +100,24 @@ class Enemy(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.mobs
         pg.sprite.Sprite.__init__(self, self.groups)
+        self.speed = random.randint(50, 200)
+        self.game = game
+        self.image = self.game.mob_img
         self.image = game.mob_img
         self.rect = self.image.get_rect()
         self.pos = vec(x, y) * TILESIZE
-        #self.vel = vec(0, 0)
+        self.vel = vec(0, 0)
         self.rect.center = self.pos
+        self.angle = 0
+
+    def get_heading(self):
+        self.angle = (self.game.player.hit_rect.center - self.pos).angle_to(vec(1, 0))
+
+    def move(self, angle):
+        self.angle = angle
+        self.vel = vec(self.speed, 0).rotate(-self.angle)
+
+
 
     #checking for collision
     def collide_with_walls(self, dir):
@@ -116,7 +130,7 @@ class Enemy(pg.sprite.Sprite):
                     self.pos.x = hits[0].rect.right
                 self.vel.x = 0
                 self.rect.x = self.pos.x
-                
+
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
@@ -128,10 +142,12 @@ class Enemy(pg.sprite.Sprite):
                 self.rect.y = self.pos.y
 
     def update(self):
+        self.get_heading()
+        self.move(self.angle)
+        self.image = pg.transform.rotate(self.game.mob_img, int(self.angle))
         self.pos.x += self.vel.x * self.game.dt
         self.pos.y += self.vel.y * self.game.dt
         self.rect.x = self.pos.x
         self.collide_with_walls('x')
         self.rect.y = self.pos.y
         self.collide_with_walls('y')
-        self.move()
