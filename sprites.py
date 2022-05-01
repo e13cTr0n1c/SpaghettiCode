@@ -5,6 +5,28 @@ from tilemap import hit_rect_collision
 import random
 vec = pg.math.Vector2
 
+#global collision function
+def collide_with_group(sprite, groups, dir):
+    if dir == 'x':
+        hits = pg.sprite.spritecollide(sprite, groups, False)
+        if hits:
+            if sprite.vel.x > 0:
+                sprite.pos.x = hits[0].rect.left - sprite.rect.width
+            if sprite.vel.x < 0:
+                sprite.pos.x = hits[0].rect.right
+            sprite.vel.x = 0
+            sprite.rect.x = sprite.pos.x
+
+    if dir == 'y':
+        hits = pg.sprite.spritecollide(sprite, groups, False)
+        if hits:
+            if sprite.vel.y > 0:
+                sprite.pos.y = hits[0].rect.top - sprite.rect.height
+            if sprite.vel.y < 0:
+                sprite.pos.y = hits[0].rect.bottom
+            sprite.vel.y = 0
+            sprite.rect.y = sprite.pos.y
+
 class Player(pg.sprite.Sprite):
     def __init__(self, game, camera, x, y,):
         self.groups = game.all_sprites
@@ -35,7 +57,6 @@ class Player(pg.sprite.Sprite):
         #self.image = pg.transform.rotate(self.game.player_img, int(self.angle))
 
 
-
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vel.x = -PLAYER_SPEED
@@ -49,28 +70,6 @@ class Player(pg.sprite.Sprite):
             self.vel.x *= 0.7071
             self.vel.y *= 0.7071
 
-    #checking for collision
-    def collide_with_walls(self, dir):
-        if dir == 'x':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False, hit_rect_collision)
-            if hits:
-                if self.vel.x > 0:
-                    self.pos.x = hits[0].rect.left - self.hit_rect.width / 2
-                if self.vel.x < 0:
-                    self.pos.x = hits[0].rect.right + self.hit_rect.width / 2
-                self.vel.x = 0
-                self.hit_rect.centerx = self.pos.x
-
-        if dir == 'y':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False, hit_rect_collision)
-            if hits:
-                if self.vel.y > 0:
-                    self.pos.y = hits[0].rect.top - self.hit_rect.height / 2
-                if self.vel.y < 0:
-                    self.pos.y = hits[0].rect.bottom + self.hit_rect.height / 2
-                self.vel.y = 0
-                self.hit_rect.centery = self.pos.y
-
     def update(self):
         self.get_inputs()
         self.image = pg.transform.rotate(self.game.player_img, int(self.angle))
@@ -79,9 +78,9 @@ class Player(pg.sprite.Sprite):
         #if self.pos
         self.pos += self.vel * self.game.dt
         self.hit_rect.centerx = self.pos.x
-        self.collide_with_walls('x')
+        collide_with_group(self, self.game.walls,'x')
         self.hit_rect.centery = self.pos.y
-        self.collide_with_walls('y')
+        collide_with_group(self, self.game.walls,'y')
         self.rect.center + self.hit_rect.center
 
 class Wall(pg.sprite.Sprite):
@@ -118,29 +117,6 @@ class Enemy(pg.sprite.Sprite):
         self.vel = vec(self.speed, 0).rotate(-self.angle)
 
 
-
-    #checking for collision
-    def collide_with_walls(self, dir):
-        if dir == 'x':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vel.x > 0:
-                    self.pos.x = hits[0].rect.left - self.rect.width
-                if self.vel.x < 0:
-                    self.pos.x = hits[0].rect.right
-                self.vel.x = 0
-                self.rect.x = self.pos.x
-
-        if dir == 'y':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vel.y > 0:
-                    self.pos.y = hits[0].rect.top - self.rect.height
-                if self.vel.y < 0:
-                    self.pos.y = hits[0].rect.bottom
-                self.vel.y = 0
-                self.rect.y = self.pos.y
-
     def update(self):
         self.get_heading()
         self.move(self.angle)
@@ -148,6 +124,6 @@ class Enemy(pg.sprite.Sprite):
         self.pos.x += self.vel.x * self.game.dt
         self.pos.y += self.vel.y * self.game.dt
         self.rect.x = self.pos.x
-        self.collide_with_walls('x')
+        collide_with_group(self, self.game.walls, 'x')
         self.rect.y = self.pos.y
-        self.collide_with_walls('y')
+        collide_with_group(self, self.game.walls, 'y')

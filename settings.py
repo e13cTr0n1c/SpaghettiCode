@@ -23,7 +23,7 @@ FPS = 144
 TITLE = "Madeleine McCann Search Party"
 BGCOLOUR = DARKGREY
 
-TILESIZE = 32
+TILESIZE = 64
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
 
@@ -37,4 +37,3 @@ WALL_IMG = 'tile_06.png'
 
 #Enemy settings
 MOB_IMG = 'zoimbie1_hold.png'
-
