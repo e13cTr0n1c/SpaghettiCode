@@ -30,10 +30,19 @@ GRIDHEIGHT = HEIGHT / TILESIZE
 #Player settings
 PLAYER_SPEED = 400
 PLAYER_IMG = 'mangun.png'
-PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)
+PLAYER_HIT_RECT = pg.Rect(0, 0, 64, 64)
+
+#Weapon settings
+BULLET_IMG = 'bullet.png'
+BULLET_SPEED = 600
+#Time before bullet despawns in ms
+BULLET_LIFE = 1000
 
 #Wall settings
 WALL_IMG = 'tile_06.png'
 
 #Enemy settings
+MOB_SPEED_MIN = 250
+MOB_SPEED_MAX = 450
 MOB_IMG = 'zoimbie1_hold.png'
+MOB_HIT_RECT = pg.Rect(0, 0, 65, 65)

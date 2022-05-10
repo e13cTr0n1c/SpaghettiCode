@@ -14,6 +14,7 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()
+        self.camx, self.camy = 0, 0
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -22,7 +23,9 @@ class Game:
         self.tilewidth = self.map.tilewidth
         self.tileheight = self.map.tileheight
         self.player_img = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
+        self.player_img = pg.transform.scale(self.player_img, (TILESIZE, TILESIZE))
         self.mob_img = pg.image.load(path.join(img_folder, MOB_IMG)).convert_alpha()
+        self.mob_img = pg.transform.scale(self.mob_img, (TILESIZE, TILESIZE))
         self.wall_img = pg.image.load(path.join(img_folder, WALL_IMG)).convert_alpha()
         self.wall_img = pg.transform.scale(self.wall_img, (TILESIZE, TILESIZE))
 
@@ -61,9 +64,9 @@ class Game:
 
     def update(self):
         # update portion of the game loop
-        self.camx, self.camy = self.camera.update(self.player)
-        self.all_sprites.update()
         #self.camx, self.camy = self.camera.update(self.player)
+        self.all_sprites.update()
+        self.camx, self.camy = self.camera.update(self.player)
 
     #UNCOMMENT THE FOLLOWING FOR GRID:
 

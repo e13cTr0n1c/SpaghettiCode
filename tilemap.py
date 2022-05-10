@@ -3,7 +3,10 @@ from settings import *
 vec = pg.math.Vector2
 
 def hit_rect_collision(one, two):
-    return one.hit_rect.colliderect(two.rect)
+    #if one in two:
+        #return False
+    #else:
+        return one.hit_rect.colliderect(two.rect)
 
 class Map:
     def __init__(self, map):
@@ -36,8 +39,8 @@ class Camera:
         self.pos.y = min(0,self.pos.y) #top
         self.pos.x = max(-(self.width - WIDTH), self.pos.x) #right
         self.pos.y = max(-(self.height - HEIGHT), self.pos.y) #bottom
-     
-        
+
+
         self.camera = pg.Rect(self.pos.x, self.pos.y, self.width, self.height)
 
         return(self.pos.x, self.pos.y)
