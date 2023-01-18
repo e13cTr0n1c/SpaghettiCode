@@ -1,5 +1,6 @@
 import random
  
+<<<<<<< HEAD
 width = 150
 height = 150
 
@@ -7,6 +8,15 @@ height = 150
 node = {
     'wallCountdown': 25000,
     'padding': 4,
+=======
+width = 64
+height = 64
+
+ 
+node = {
+    'wallCountdown': 3600,
+    'padding': 2,
+>>>>>>> 8b87b22 (six months of work)
     'x': int( width / 2 ),
     'y': int( height / 2 )
 }
